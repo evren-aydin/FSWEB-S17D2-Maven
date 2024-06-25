@@ -1,6 +1,9 @@
 package com.workintech.s17d2.model;
 
-public abstract class Developer {
+import org.springframework.stereotype.Controller;
+
+
+public class Developer {
 
     private int id;
     private String name;

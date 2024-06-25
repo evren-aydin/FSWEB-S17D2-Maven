@@ -1,4 +1,4 @@
-package rest;
+package com.workintech.s17d2.rest;
 
 import com.workintech.s17d2.model.*;
 import com.workintech.s17d2.tax.DeveloperTax;
@@ -19,7 +19,7 @@ private Map<Integer, Developer> developers;
 private Taxable developerTax;
 
     @PostConstruct
-    private void postContruct(Map<Integer, Developer> developers) {
+    public void init() {
         this.developers = new HashMap<>();
     }
     @Autowired
@@ -46,14 +46,14 @@ private Taxable developerTax;
 
         switch (experience){
             case JUNIOR:
-                developer= new JuniorDeveloper(id,name,salary-developerTax.getSimpleTaxRate());
+                developer= new JuniorDeveloper(id,name,salary - calculateTax(salary, developerTax.getSimpleTaxRate()));
 
           break;
             case MID:
-                developer= new MidDeveloper(id,name,salary-developerTax.getMiddleTaxRate());
+                developer= new MidDeveloper(id,name,salary - calculateTax(salary, developerTax.getMiddleTaxRate()));
             break;
             case SENIOR:
-                developer= new SeniorDeveloper(id,name,salary-developerTax.getUpperTaxRate());
+                developer= new SeniorDeveloper(id,name,salary - calculateTax(salary, developerTax.getUpperTaxRate()));
             break;
             default:
                 System.out.println("yanlış experience tipi");
@@ -67,9 +67,21 @@ private Taxable developerTax;
         if(developers.containsKey(id)){
             developers.put(id,developer);
         }
+
     }
     @DeleteMapping("/developers/{id}")
     public Developer deleteMap(@PathVariable int id){
        return developers.remove(id);
+    }
+    private double calculateTax(double salary, double taxRate) {
+        return salary * (taxRate / 100);
+    }
+
+    public Map<Integer, Developer> getDevelopers() {
+        return developers;
+    }
+
+    public void setDevelopers(Map<Integer, Developer> developers) {
+        this.developers = developers;
     }
 }
